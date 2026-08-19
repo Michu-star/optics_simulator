@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from optics import Ray, find_image
+from optics import find_image
 
 
 def draw_ray(ax, ray, color="grey"):
@@ -23,37 +23,31 @@ def draw_rays(ax, rays, delta=10, color="grey"):
             ax.plot([x_last, x_image], [y_last, y_image], color=color)
 
 
-def draw_scene(ax, obj, lenses):
+def draw_scene(ax, system):
     ax.clear()
 
-    # Physics
-    rays = [Ray(*obj.unpack(), 0, lenses),
-            Ray(*obj.unpack(), -0.25, lenses)]
-
-    image = find_image(rays[0], rays[1])
-
     # text output
-    print(f'Object position: {obj.pos}')
-    print(f'Object height: {obj.h}')
+    print(f'Object position: {system.obj.pos}')
+    print(f'Object height: {system.obj.h}')
     print()
-    print(f'Image position: {image[0]}')
-    print(f'Image height: {image[1]}')
+    print(f'Image position: {system.image[0]}')
+    print(f'Image height: {system.image[1]}')
 
     # object
-    ax.plot([obj.pos, obj.pos], [0, obj.h], color="red")
+    ax.plot([system.obj.pos, system.obj.pos], [0, system.obj.h], color="red")
 
     # lenses
-    for i in range(len(lenses)):
-        ax.axvline(x=lenses[i].pos, color="black")
-        ax.plot(lenses[i].pos - lenses[i].f, 0, marker="o", color="black")
-        ax.plot(lenses[i].pos + lenses[i].f, 0, marker="o", color="black")
+    for i in range(len(system.lenses)):
+        ax.axvline(x=system.lenses[i].pos, color="black")
+        ax.plot(system.lenses[i].pos - system.lenses[i].f, 0, marker="o", color="black")
+        ax.plot(system.lenses[i].pos + system.lenses[i].f, 0, marker="o", color="black")
 
     # rays
-    draw_rays(ax, rays)
+    draw_rays(ax, system.rays)
 
     # image
-    if image[0] != np.inf:
-        ax.plot([image[0], image[0]], [0, image[1]], color="blue")
+    if system.image[0] != np.inf:
+        ax.plot([system.image[0], system.image[0]], [0, system.image[1]], color="blue")
 
     ax.set_title("Thin lenses")
     ax.set_xlabel("x")

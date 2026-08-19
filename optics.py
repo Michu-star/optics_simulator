@@ -18,7 +18,6 @@ class Ray:
         self.seg = calculate_ray(lenses_to_propagate, self)
 
 
-# Physics
 class Lens:
     def __init__(self, position, f):
         self.pos = position
@@ -41,7 +40,20 @@ class Lens:
         return self.calculate_image_pos(obj, ray_from_left), self.calculate_image_h(obj, ray_from_left)
 
 
-# Geometry
+class OpticalSystem:
+    def __init__(self, obj, lenses):
+        self.obj = obj
+        self.rays = []
+        self.lenses = lenses
+        self.image = None
+
+    def recalculate(self):
+        self.rays = [Ray(*self.obj.unpack(), 0, self.lenses),
+                Ray(*self.obj.unpack(), -0.25, self.lenses)]
+
+        self.image = find_image(self.rays[0], self.rays[1])
+
+
 def calculate_ray(lenses, ray):
     segments = np.zeros((len(lenses) + 1, 3))
     segments[0] = np.array([ray.x_0, ray.y_0, ray.s_0])
