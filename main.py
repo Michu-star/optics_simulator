@@ -1,15 +1,11 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
-
-
+'''
 class Obj:
     def __init__(self, position, height):
         self.pos = position
         self.h = height
 
     def unpack(self):
-        return (self.pos, self.h)
+        return self.pos, self.h
 
 
 class Ray:
@@ -40,7 +36,7 @@ class Lens:
         return -obj.h * (image_pos - self.pos) / (self.pos - obj.pos)
 
     def calculate_image(self, obj, ray_from_left=1):
-        return (self.calculate_image_pos(obj, ray_from_left), self.calculate_image_h(obj, ray_from_left))
+        return self.calculate_image_pos(obj, ray_from_left), self.calculate_image_h(obj, ray_from_left)
 
 
 # Geometry
@@ -77,17 +73,8 @@ def find_image(ray1, ray2):
 
 
 '''
-def calculate_ray(lens, obj, h=0):
-    image = Obj(*lens.calculate_image(obj, 1))
 
-    start = np.array([obj.pos, obj.h])
-    middle = np.array([lens.pos, h])
-    end = np.array([image.pos, image.h])
-
-    return np.array([start, middle, end])
 '''
-
-
 # Representation
 def draw_ray(ax, ray, color="grey"):
     for i in range(np.shape(ray.seg)[0] - 1):
@@ -148,8 +135,9 @@ def draw_scene(ax, obj, lenses):
 
     plt.plot()
     plt.show()
+'''
 
-
+'''
 lenses = [Lens(0,6),
           Lens(2,4),
           Lens(4,3)]
@@ -160,3 +148,28 @@ obj1 = Obj(-22, 1)
 fig, ax = plt.subplots(figsize=(10, 7))
 
 draw_scene(ax, obj1, lenses)
+'''
+
+import matplotlib.pyplot as plt
+
+from optics import Obj, Lens
+from plotting import draw_scene
+
+
+def main():
+    lenses = [
+        Lens(0, 6),
+        Lens(2, 4),
+        Lens(4, 3)
+    ]
+
+    lenses.sort(key=lambda lens: lens.pos)
+
+    obj = Obj(-22, 1)
+
+    fig, ax = plt.subplots(figsize=(10, 7))
+    draw_scene(ax, obj, lenses)
+
+
+if __name__ == "__main__":
+    main()
