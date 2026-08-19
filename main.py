@@ -15,7 +15,7 @@ def main():
 
     obj = Obj(-22, 1)
 
-    system = OpticalSystem(obj, lenses)
+    system = OpticalSystem(obj, lenses, [0, -0.25, 0.25])
     system.recalculate()
 
     fig, ax = plt.subplots(figsize=(10, 7))

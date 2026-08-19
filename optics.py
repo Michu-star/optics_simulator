@@ -11,11 +11,11 @@ class Obj:
 
 
 class Ray:
-    def __init__(self, x_initial, y_initial, slope_initial, lenses_to_propagate):
+    def __init__(self, x_initial, y_initial, slope_initial):
         self.x_0 = x_initial
         self.y_0 = y_initial
         self.s_0 = slope_initial
-        self.seg = calculate_ray(lenses_to_propagate, self)
+        self.seg = None
 
 
 class Lens:
@@ -41,15 +41,18 @@ class Lens:
 
 
 class OpticalSystem:
-    def __init__(self, obj, lenses):
+    def __init__(self, obj, lenses, ray_slopes):
         self.obj = obj
-        self.rays = []
         self.lenses = lenses
+        self.rays = []
         self.image = None
 
+        for slope in ray_slopes:
+            self.rays.append(Ray(*self.obj.unpack(), slope))
+
     def recalculate(self):
-        self.rays = [Ray(*self.obj.unpack(), 0, self.lenses),
-                Ray(*self.obj.unpack(), -0.25, self.lenses)]
+        for ray in self.rays:
+            ray.seg = calculate_ray(self.lenses, ray)
 
         self.image = find_image(self.rays[0], self.rays[1])
 
