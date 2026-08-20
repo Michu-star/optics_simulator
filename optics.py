@@ -52,6 +52,8 @@ class OpticalSystem:
 
     def recalculate(self):
         for ray in self.rays:
+            ray.x_0 = self.obj.pos
+            ray.y_0 = self.obj.h
             ray.seg = calculate_ray(self.lenses, ray)
 
         self.image = find_image(self.rays[0], self.rays[1])

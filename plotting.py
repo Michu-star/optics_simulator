@@ -54,6 +54,3 @@ def draw_scene(ax, system):
     ax.set_ylabel("y")
     ax.grid(True, alpha=0.4)
     # ax.legend()
-
-    plt.plot()
-    plt.show()

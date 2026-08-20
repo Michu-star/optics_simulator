@@ -1,41 +1,69 @@
 import sys
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QSlider
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QPushButton, QSlider, QVBoxLayout, QHBoxLayout
 
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
 
-class MainWindow(QWidget):
-    def __init__(self):
+from plotting import draw_scene
+
+class MainWindow(QMainWindow):
+    def __init__(self, optical_system):
         super().__init__()
         self.setWindowTitle("Optics Simulator")
         self.setGeometry(0, 0, 800, 600)
 
-        self.label = QLabel("Hello World")
-        self.button1 = QPushButton("Click Me")
+        self.system = optical_system
 
-        self.slider = QSlider(Qt.Orientation.Horizontal)
-        self.slider.setRange(0, 100)
-        self.slider.valueChanged.connect(self.slider_changed)
+        self.create_plot()
+        self.create_controls()
+        self.create_layout()
+
+        self.update_plot()
+
+    def create_plot(self):
+        self.figure = Figure()
+        self.canvas = FigureCanvasQTAgg(self.figure)
+        self.ax = self.figure.subplots()
+
+    def create_controls(self):
+        self.object_position_slider = QSlider(Qt.Orientation.Horizontal)
+
+        self.object_position_slider.setRange(-100, 100)
+
+        self.object_position_slider.valueChanged.connect(
+            self.object_position_changed
+        )
+
+    def create_layout(self):
+        central_widget = QWidget()
+
+        layout = QVBoxLayout()
+
+        layout.addWidget(self.canvas)
+        layout.addWidget(self.object_position_slider)
+
+        central_widget.setLayout(layout)
+
+        self.setCentralWidget(central_widget)
+
+    def object_position_changed(self, value):
+        self.system.obj.pos = value
+        self.system.recalculate()
+
+        self.update_plot()
+
+    def update_plot(self):
+        self.ax.clear()
+
+        draw_scene(self.ax, self.system)
+
+        self.canvas.draw()
 
 
-        main_layout = QVBoxLayout()
-        main_layout.addWidget(self.label)
-
-        controls_layout = QHBoxLayout()
-        controls_layout.addWidget(self.button1)
-        controls_layout.addWidget(self.slider)
-        main_layout.addLayout(controls_layout)
-
-        self.setLayout(main_layout)
-
-    def slider_changed(self, value):
-        print(value)
-
-
-def draw_window():
+def draw_window(optical_system):
     app = QApplication(sys.argv)
-    window = MainWindow()
+    window = MainWindow(optical_system)
     window.show()
     sys.exit(app.exec())
-
-draw_window()

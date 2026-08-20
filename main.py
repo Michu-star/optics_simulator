@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 
 from optics import Obj, Lens, OpticalSystem
 from plotting import draw_scene
+from gui import draw_window
 
 
 def main():
@@ -18,8 +19,7 @@ def main():
     system = OpticalSystem(obj, lenses, [0, -0.25, 0.25])
     system.recalculate()
 
-    fig, ax = plt.subplots(figsize=(10, 7))
-    draw_scene(ax, system)
+    draw_window(system)
 
 
 if __name__ == "__main__":
