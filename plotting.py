@@ -24,7 +24,6 @@ def draw_rays(ax, rays, delta=10, color="grey"):
 
 
 def draw_scene(ax, system):
-    ax.clear()
 
     # text output
     print(f'Object position: {system.obj.pos}')
