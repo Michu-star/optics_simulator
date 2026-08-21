@@ -30,7 +30,11 @@ class MainWindow(QMainWindow):
     def create_controls(self):
         self.object_position_slider = QSlider(Qt.Orientation.Horizontal)
 
-        self.object_position_slider.setRange(-100, 100)
+        self.object_position_slider.setRange(-400, 400)
+        self.object_position_slider.setSingleStep(1)
+
+        # to allow for the step size of 0.25 the slider value is 4 times the position of the object
+        self.object_position_slider.setValue(self.system.obj.pos * 4)
 
         self.object_position_slider.valueChanged.connect(
             self.object_position_changed
@@ -49,7 +53,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
 
     def object_position_changed(self, value):
-        self.system.obj.pos = value
+        self.system.obj.pos = value / 4
         self.system.recalculate()
 
         self.update_plot()
