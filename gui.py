@@ -49,12 +49,12 @@ class MainWindow(QMainWindow):
             slider.setSingleStep(1)
 
             # to allow for the step size of 0.25 the slider value is 4 times the position of the object
-            slider.setValue(self.system.lenses[i].pos * 4)
+            slider.setValue(int(lens.pos * 4))
 
             self.lens_position_sliders.append(slider)
 
             slider.valueChanged.connect(
-                lambda value, i=i: self.lens_position_changed(value, i)
+                lambda value, lens=lens: self.lens_position_changed(value, lens)
             )
 
     def create_layout(self):
@@ -78,8 +78,9 @@ class MainWindow(QMainWindow):
 
         self.update_plot()
 
-    def lens_position_changed(self, value, i):
-        self.system.lenses[i].pos = value / 4
+    def lens_position_changed(self, value, lens):
+        lens.pos = value / 4
+        self.system.sort_lenses()
         self.system.recalculate()
 
         self.update_plot()

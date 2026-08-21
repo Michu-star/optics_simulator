@@ -48,7 +48,7 @@ def draw_scene(ax, system):
     if system.image[0] != np.inf:
         ax.plot([system.image[0], system.image[0]], [0, system.image[1]], color="blue")
 
-    ax.set_title("Thin lenses")
+    ax.set_title("Optics Simulator")
     ax.set_xlabel("x")
     ax.set_ylabel("y")
     ax.grid(True, alpha=0.4)

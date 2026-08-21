@@ -58,6 +58,9 @@ class OpticalSystem:
 
         self.image = find_image(self.rays[0], self.rays[1])
 
+    def sort_lenses(self):
+        self.lenses.sort(key=lambda lens: lens.pos)
+
 
 def calculate_ray(lenses, ray):
     segments = np.zeros((len(lenses) + 1, 3))
