@@ -1,5 +1,7 @@
 # Paraxial Geometric Optics Simulator
 
+![Preview](preview.png)
+
 An interactive thin-lens ray-tracing simulator built with Python, `NumPy`, `Matplotlib`, and `PyQt6`. Supports arbitrary sequences of converging and diverging thin lenses with real-time object and lens position sliders.
 
 ## Physics & Ray-Tracing Model
