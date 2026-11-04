@@ -19,10 +19,13 @@ class Ray:
 
 
 class Lens:
-    def __init__(self, position, f):
-        self.pos = position
+    def __init__(self, position, f, d=0.0):
+        self.pos = position # position of the left principal plane
+        self.d = d          # distance between principal planes
         self.f = f
 
+    # legacy methods
+    '''
     def calculate_image_pos(self, obj, ray_from_left=1):
 
         relative_pos = ray_from_left * (self.pos - obj.pos)
@@ -38,6 +41,7 @@ class Lens:
 
     def calculate_image(self, obj, ray_from_left=1):
         return self.calculate_image_pos(obj, ray_from_left), self.calculate_image_h(obj, ray_from_left)
+        '''
 
 
 class OpticalSystem:
@@ -63,19 +67,22 @@ class OpticalSystem:
 
 
 def calculate_ray(lenses, ray):
-    segments = np.zeros((len(lenses) + 1, 3))
-    segments[0] = np.array([ray.x_0, ray.y_0, ray.s_0])
+    segments = [[ray.x_0, ray.y_0, ray.s_0]]
 
-    for i in range(len(lenses)):
-        x_before, y_before, s_before = segments[i]
+    for lens in lenses:
+        x_before, y_before, s_before = segments[-1]
 
-        x = lenses[i].pos
+        x = lens.pos
         y = y_before + (x - x_before) * s_before
-        s = -(y - lenses[i].f * s_before) / lenses[i].f
+        s = -(y - lens.f * s_before) / lens.f
 
-        segments[i + 1] = [x, y, s]
+        if lens.d:
+            segments.append([x, y, s_before])      # Arrival at H1
+            segments.append([x + lens.d, y, s])    # Exit from H2 with new slope
+        else:
+            segments.append([x, y, s])
 
-    return segments
+    return np.array(segments)
 
 
 def find_image(ray1, ray2):
@@ -87,8 +94,14 @@ def find_image(ray1, ray2):
         print("no image, rays parallel")
         x_image = np.inf
         y_image = np.inf * s1_last
+        return x_image, y_image, None
     else:
-        x_image = x1_last + (y2_last - y1_last) / (s1_last - s2_last)
-        y_image = y1_last + (x_image - x1_last) * s1_last
+        x_image = (y2_last - y1_last + s1_last * x1_last - s2_last * x2_last) / (s1_last - s2_last)
+        y_image = y1_last + s1_last * (x_image - x1_last)
 
-    return x_image, y_image
+        if x_image > max(x1_last, x2_last):
+            real = True
+        else:
+            real = False
+
+        return x_image, y_image, real
