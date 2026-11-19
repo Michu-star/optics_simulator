@@ -39,6 +39,8 @@ def draw_scene(ax, system, delta=10):
     print()
     print(f'Image position: {system.image[0]}')
     print(f'Image height: {system.image[1]}')
+    print()
+    print()
 
     # object
     ax.plot([system.obj.pos, system.obj.pos], [0, system.obj.h], color="red")
@@ -62,6 +64,10 @@ def draw_scene(ax, system, delta=10):
     # image
     if system.image[0] != np.inf:
         ax.plot([system.image[0], system.image[0]], [0, system.image[1]], color="blue")
+
+    # limits
+    if system.obj.pos <= -100:
+        ax.set_xlim(-100)
 
     ax.set_title("Optics Simulator")
     ax.set_xlabel("x")

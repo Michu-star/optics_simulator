@@ -19,10 +19,11 @@ class Ray:
 
 
 class Lens:
-    def __init__(self, position, f, d=0.0):
+    def __init__(self, position, f, d=0.0, label=None):
         self.pos = position # position of the left principal plane
         self.d = d          # distance between principal planes
         self.f = f
+        self.label = label
 
     # legacy methods
     '''
@@ -70,17 +71,18 @@ def calculate_ray(lenses, ray):
     segments = [[ray.x_0, ray.y_0, ray.s_0]]
 
     for lens in lenses:
-        x_before, y_before, s_before = segments[-1]
+        if lens.f != 0:
+            x_before, y_before, s_before = segments[-1]
 
-        x = lens.pos
-        y = y_before + (x - x_before) * s_before
-        s = -(y - lens.f * s_before) / lens.f
+            x = lens.pos
+            y = y_before + (x - x_before) * s_before
+            s = -(y - lens.f * s_before) / lens.f
 
-        if lens.d:
-            segments.append([x, y, s_before])      # Arrival at H1
-            segments.append([x + lens.d, y, s])    # Exit from H2 with new slope
-        else:
-            segments.append([x, y, s])
+            if lens.d:
+                segments.append([x, y, s_before])      # Arrival at H1
+                segments.append([x + lens.d, y, s])    # Exit from H2 with new slope
+            else:
+                segments.append([x, y, s])
 
     return np.array(segments)
 

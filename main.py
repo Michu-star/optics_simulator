@@ -4,8 +4,9 @@ from gui import draw_window
 
 def main():
     lenses = [
-        Lens(0, 20, d=3),
-        Lens(10, -10)
+        Lens(0, 20, d=3, label='Thick Lens'),
+        Lens(10, -10),
+        Lens(20, -20)
     ]
 
     lenses.sort(key=lambda lens: lens.pos)
